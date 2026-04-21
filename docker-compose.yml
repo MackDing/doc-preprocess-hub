@@ -1,0 +1,151 @@
+# doc-preprocess-hub — local dev stack
+# Usage:
+#   cp .env.example .env
+#   docker compose up -d postgres redis rabbitmq minio
+#   docker compose up orchestrator worker-docling worker-postproc
+#
+# worker-mineru is NOT started by default — it needs GPU.
+# Start it separately on a GPU host:
+#   docker compose --profile gpu up worker-mineru
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-dph}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dph_dev_password}
+      POSTGRES_DB: ${POSTGRES_DB:-dph}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./schema/001_init.sql:/docker-entrypoint-initdb.d/001_init.sql:ro
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER:-dph}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-dph}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-dph_dev_password}
+    ports:
+      - "${RABBITMQ_PORT:-5672}:5672"
+      - "${RABBITMQ_MANAGEMENT_PORT:-15672}:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-dph}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-dph_dev_password}
+    ports:
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # Creates the initial buckets.
+  minio-init:
+    image: minio/mc:latest
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://minio:9000 ${MINIO_ROOT_USER:-dph} ${MINIO_ROOT_PASSWORD:-dph_dev_password};
+      mc mb --ignore-existing local/${MINIO_BUCKET_RAW:-dph-raw};
+      mc mb --ignore-existing local/${MINIO_BUCKET_PARSED:-dph-parsed};
+      echo 'MinIO buckets ready.';
+      "
+
+  orchestrator:
+    build:
+      context: ./services/orchestrator
+    env_file: .env
+    ports:
+      - "${ORCHESTRATOR_PORT:-8000}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./services/orchestrator/app:/app/app:ro
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+  worker-docling:
+    build:
+      context: ./services/worker-docling
+    env_file: .env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    command: ["celery", "-A", "app.tasks", "worker", "--loglevel=INFO", "-Q", "queue.docling"]
+
+  worker-postproc:
+    build:
+      context: ./services/worker-postproc
+    env_file: .env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    command: ["celery", "-A", "app.tasks", "worker", "--loglevel=INFO", "-Q", "queue.postproc"]
+
+  worker-mineru:
+    profiles: ["gpu"]
+    build:
+      context: ./services/worker-mineru
+    env_file: .env
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    command: ["celery", "-A", "app.tasks", "worker", "--loglevel=INFO", "-Q", "queue.mineru"]
+
+volumes:
+  postgres_data:
+  redis_data:
+  rabbitmq_data:
+  minio_data:

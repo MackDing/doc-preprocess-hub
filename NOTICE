@@ -1,0 +1,100 @@
+doc-preprocess-hub
+Copyright 2026 doc-preprocess-hub contributors
+
+This product includes software developed at and by various third parties.
+
+================================================================================
+Third-party components (not redistributed in source form, but integrated as
+runtime dependencies). Each component retains its own license. Users deploying
+this project must comply with all listed licenses.
+================================================================================
+
+MinerU
+  https://github.com/opendatalab/MinerU
+  License: AGPL-3.0
+  Usage:   integrated as a runtime parser in worker-mineru service
+  Note:    AGPL-3.0 is a strong copyleft license. If you deploy this project
+           as a network service, the AGPL may require you to make the full
+           source of your deployment available to users of the service.
+           Consult your legal counsel if this is a concern.
+
+docling
+  https://github.com/DS4SD/docling
+  License: MIT
+  Usage:   integrated as a runtime parser in worker-docling service
+
+Microsoft Presidio
+  https://github.com/microsoft/presidio
+  License: MIT
+  Usage:   integrated as a runtime PII redaction engine in worker-postproc
+
+Apache APISIX
+  https://github.com/apache/apisix
+  License: Apache-2.0
+  Usage:   recommended API gateway (not bundled; deployed separately)
+
+LangChain (text-splitters)
+  https://github.com/langchain-ai/langchain
+  License: MIT
+  Usage:   chunking strategies in worker-postproc
+
+Celery
+  https://github.com/celery/celery
+  License: BSD 3-Clause
+  Usage:   async task orchestration
+
+FastAPI
+  https://github.com/tiangolo/fastapi
+  License: MIT
+  Usage:   orchestrator-api framework
+
+SQLAlchemy
+  https://github.com/sqlalchemy/sqlalchemy
+  License: MIT
+  Usage:   Postgres ORM
+
+Alembic
+  https://github.com/sqlalchemy/alembic
+  License: MIT
+  Usage:   database migrations
+
+OpenTelemetry Python
+  https://github.com/open-telemetry/opentelemetry-python
+  License: Apache-2.0
+  Usage:   distributed tracing
+
+MinIO Python SDK
+  https://github.com/minio/minio-py
+  License: Apache-2.0
+  Usage:   object storage client
+
+RabbitMQ (broker, not bundled)
+  https://github.com/rabbitmq/rabbitmq-server
+  License: Mozilla Public License 2.0
+  Usage:   Celery broker
+
+PostgreSQL (not bundled)
+  https://www.postgresql.org/
+  License: PostgreSQL License
+  Usage:   metadata and audit store
+
+Redis (not bundled)
+  https://github.com/redis/redis
+  License: RSALv2 / SSPLv1 (check current terms for Redis 7.4+)
+  Usage:   cache and optional Celery broker fallback
+
+Ant Design Pro
+  https://github.com/ant-design/ant-design-pro
+  License: MIT
+  Usage:   operator console scaffold
+
+Syft, Trivy, Cosign
+  https://github.com/anchore/syft          (Apache-2.0)
+  https://github.com/aquasecurity/trivy    (Apache-2.0)
+  https://github.com/sigstore/cosign       (Apache-2.0)
+  Usage:   supply-chain scanning and signing in CI
+
+================================================================================
+If you are unsure about the license implications of integrating these
+components in your deployment, consult your organization's legal team.
+================================================================================

@@ -1,0 +1,28 @@
+[project]
+name = "dph-worker-mineru"
+version = "0.1.0"
+description = "MinerU worker — complex PDFs, scans, tables, formulas"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+dependencies = [
+    "celery>=5.4",
+    "redis>=5.0",
+    "minio>=7.2",
+    "pydantic>=2.8",
+    "pydantic-settings>=2.4",
+    "structlog>=24.4",
+    # TODO(engine): add MinerU runtime dependency once the engine is wired in.
+    # "magic-pdf>=0.10",  # MinerU's pip name
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3", "ruff>=0.6"]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]

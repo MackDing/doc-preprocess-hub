@@ -1,0 +1,46 @@
+name: SBOM & vulnerability scan
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+
+jobs:
+  sbom:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [orchestrator, worker-mineru, worker-docling, worker-postproc]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./services/${{ matrix.service }}
+          tags: dph-${{ matrix.service }}:ci
+          load: true
+
+      - name: Generate SBOM (Syft)
+        uses: anchore/sbom-action@v0
+        with:
+          image: dph-${{ matrix.service }}:ci
+          format: spdx-json
+          output-file: sbom-${{ matrix.service }}.spdx.json
+
+      - name: Scan for vulnerabilities (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: dph-${{ matrix.service }}:ci
+          severity: HIGH,CRITICAL
+          exit-code: 1
+          ignore-unfixed: true
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-${{ matrix.service }}
+          path: sbom-${{ matrix.service }}.spdx.json

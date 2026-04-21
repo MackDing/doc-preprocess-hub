@@ -1,0 +1,102 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env
+!.env.example
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+.hypothesis/
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Alembic
+# (keep versions/ but don't commit developer's local SQLite)
+*.db
+*.sqlite
+
+# Docker volumes (local dev)
+.data/
+.volumes/
+
+# Secrets
+*.pem
+*.key
+secrets/
+
+# Node
+node_modules/
+.next/
+out/
+.turbo/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Model weights (never commit)
+*.bin
+*.safetensors
+*.onnx
+*.pt
+*.pth
+models/
+
+# Parsed outputs (local dev)
+.work/
+tmp/
+output/
+
+# Generated SBOM files in dev (CI produces these)
+sbom-*.json
+sbom-*.spdx.json
