@@ -1,0 +1,33 @@
+# doc-preprocess-hub
+
+> Enterprise document preprocessing platform — MinerU + docling with audit trails, PII redaction, and operator console.
+
+## What is doc-preprocess-hub?
+
+A production-ready document preprocessing pipeline that combines MinerU and docling for document parsing, with built-in PII redaction (Presidio), audit trails, and an Ant Design Pro operator console.
+
+## Key Features
+
+- Dual parser engine: MinerU + docling
+- PII redaction via Microsoft Presidio
+- Full audit trail for compliance
+- Ant Design Pro operator console
+- FastAPI backend with Celery task queue
+- OCR support for scanned documents
+- RAG-ready output formats
+
+## Tech Stack
+
+FastAPI, Celery, MinerU, docling, Presidio, Ant Design Pro, React
+
+## Use Cases
+
+- Enterprise document ingestion for RAG pipelines
+- Compliance-ready document processing with PII handling
+- Batch document conversion with operator oversight
+
+## Links
+
+- Repository: https://github.com/MackDing/doc-preprocess-hub
+- Author: https://github.com/MackDing
+- OPC Hub: https://opc.ren
