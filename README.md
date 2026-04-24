@@ -196,3 +196,19 @@ Built on the shoulders of giants:
 - [langchain-ai/langchain](https://github.com/langchain-ai/langchain) — text splitters
 - [anchore/syft](https://github.com/anchore/syft), [aquasecurity/trivy](https://github.com/aquasecurity/trivy), [sigstore/cosign](https://github.com/sigstore/cosign) — supply chain tooling
 - [ant-design/ant-design-pro](https://github.com/ant-design/ant-design-pro) — admin console framework
+
+
+---
+
+## 🦞 OPC Ecosystem
+
+> Built by [@MackDing](https://github.com/MackDing) — One-Person Company infrastructure powered by AI agents.
+
+| Project | What it does |
+|---------|-------------|
+| [**opc.ren**](https://opc.ren) | OPC founder hub — tools, signals, community |
+| [**CodexClaw**](https://github.com/MackDing/CodexClaw) | Telegram bot for remote Codex access with MCP + subagent routing |
+| [**awesome-ai-api**](https://github.com/MackDing/awesome-ai-api) | Leaderboard of 200+ AI API gateways & relays |
+| [**claude-context-health**](https://github.com/MackDing/claude-context-health) | Diagnose & fix Claude Code session degradation |
+| [**opc-daily-signal**](https://github.com/MackDing/opc-daily-signal) | AI-powered daily decision intelligence for OPC founders |
+| [**doc-preprocess-hub**](https://github.com/MackDing/doc-preprocess-hub) | Enterprise document preprocessing — MinerU + docling |
